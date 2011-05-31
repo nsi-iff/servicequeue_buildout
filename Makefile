@@ -10,7 +10,8 @@ buildout:
 	bin/buildout -vv
 
 rabbitmq_auth:
-	bin/rabbitmq-server -detached
+	bin/rabbitmq-server &
+	sleep 6
 	bin/rabbitmqctl add_user test test
 	bin/rabbitmqctl add_vhost myvhost
 	bin/rabbitmqctl set_permissions -p myvhost test ".*" ".*" ".*"
