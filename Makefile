@@ -3,7 +3,7 @@ PYTHON=python
 all: rabbitmq_deps buildout rabbitmq_auth
 
 rabbitmq_deps:
-	sudo apt-get install erlang -y
+	sudo apt-get install erlang build-essential ncurses-dev libncurses libcurl4-dev libcurl4-openssl-dev xsltproc -y
 
 buildout:
 	${PYTHON} bootstrap.py
