@@ -1,0 +1,48 @@
+#!/bin/bash
+
+#set -x
+
+FOLDER_PATH="/vagrant/servicequeue_buildout"
+OPTS=""
+
+bin_path="$FOLDER_PATH/bin"
+pid_path="$FOLDER_PATH/run"
+
+. /lib/lsb/init-functions
+
+
+case "$1" in
+  start)
+     log_daemon_msg "Starting RabbitMQ server..." "RabbitMQ"
+     if start-stop-daemon --start --quiet --oknodo --pidfile $pid_path/rabbitmq.pid --exec $bin_path/rabbitmq-server -- -detached $OPTS; then
+        pid=`bin/rabbitmqctl status | perl -n -e'/{pid,(\d+)/ && print $1'`
+        echo $pid > $pid_path/rabbitmq.pid
+        log_end_msg 0
+     else
+        log_end_msg 1
+     fi
+     ;;
+
+  stop)
+     log_daemon_msg "Stoping RabbitMQ server..." "RabbitMQ"
+     if start-stop-daemon --stop --quiet --oknodo --pidfile $pid_path/rabbitmq.pid --exec $bin_path/rabbitmqctl stop; then
+        rm -rf $pid_path/rabbitmq.pid
+        $bin_path/rabbitmqctl stop
+        log_end_msg 0
+     else
+        log_end_msg 1
+     fi
+     ;;
+
+  status)
+    pid=`bin/rabbitmqctl status | perl -n -e'/{pid,(\d+)/ && print $1'`
+    echo $pid > $pid_path/rabbitmq.pid
+     status_of_proc -p $pid_path/rabbitmq.pid $bin_path/ rabbitmq && exit 0 || exit $?
+     ;;
+
+  *)
+    log_action_msg "Usage: /etc/init.d/servicequeue {start|stop|status}"
+    exit 1
+esac
+
+exit 0
