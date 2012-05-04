@@ -1,6 +1,10 @@
 PYTHON=python
+PID=`bin/rabbitmqctl status | perl -n -e'/{pid,(\d+)/ && print $$1'`
 
 all: rabbitmq_deps buildout rabbitmq_auth
+
+rabbitmq_pid:
+	echo ${PID} > run/rabbitmq.pid
 
 rabbitmq_deps:
 	sudo apt-get install erlang build-essential ncurses-dev libncurses-dev xsltproc -y
