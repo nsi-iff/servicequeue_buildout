@@ -25,9 +25,7 @@ case "$1" in
 
   stop)
      log_daemon_msg "Stoping RabbitMQ server..." "RabbitMQ"
-     if start-stop-daemon --stop --quiet --oknodo --pidfile $pid_path/rabbitmq.pid --exec $bin_path/rabbitmqctl stop; then
-        rm -rf $pid_path/rabbitmq.pid
-        $bin_path/rabbitmqctl stop
+     if start-stop-daemon --stop --quiet --oknodo --pidfile $pid_path/rabbitmq.pid; then
         log_end_msg 0
      else
         log_end_msg 1
@@ -35,7 +33,9 @@ case "$1" in
      ;;
 
   status)
-    pid=`bin/rabbitmqctl status | perl -n -e'/{pid,(\d+)/ && print $1'`
+    if [ ! -e $pid_path/rabbitmq.pid ]; then
+        pid=`bin/rabbitmqctl status | perl -n -e'/{pid,(\d+)/ && print $1'`
+    fi
     echo $pid > $pid_path/rabbitmq.pid
      status_of_proc -p $pid_path/rabbitmq.pid $bin_path/ rabbitmq && exit 0 || exit $?
      ;;
