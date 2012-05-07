@@ -35,8 +35,8 @@ case "$1" in
   status)
     if [ ! -e $pid_path/rabbitmq.pid ]; then
         pid=`bin/rabbitmqctl status | perl -n -e'/{pid,(\d+)/ && print $1'`
+        echo $pid > $pid_path/rabbitmq.pid
     fi
-    echo $pid > $pid_path/rabbitmq.pid
      status_of_proc -p $pid_path/rabbitmq.pid $bin_path/ rabbitmq && exit 0 || exit $?
      ;;
 
