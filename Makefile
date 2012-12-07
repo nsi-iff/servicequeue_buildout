@@ -7,7 +7,7 @@ rabbitmq_pid:
 	echo ${PID} > run/rabbitmq.pid
 
 rabbitmq_deps:
-	sudo apt-get install erlang build-essential ncurses-dev libncurses-dev xsltproc -y
+	sudo apt-get install erlang build-essential ncurses-dev libncurses-dev xsltproc unzip zip -y
 
 buildout:
 	${PYTHON} bootstrap.py
